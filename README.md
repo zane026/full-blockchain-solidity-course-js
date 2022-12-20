@@ -878,6 +878,20 @@ In your `.vscode/settings.json` file.
 - [solc-js](https://github.com/ethereum/solc-js)
   - `yarn add solc@0.8.7-fixed`
 - [yarn scripts](https://classic.yarnpkg.com/lang/en/docs/cli/run/)
+```
+
+yarn solcjs --bin --abi --include-path node modules/  --base-path . -o XXXXcontract.sol
+```
+
+打包进脚本
+在package.json里
+```
+"scripts": {
+"compile": "yarn solcjs --bin --abi --include-path node modules/  --base-path . -o XXXXcontract.sol"
+}
+
+以后就可以直接用yarn compile
+
 ## Ganache & Networks
 - [Ganache](https://trufflesuite.com/ganache/)
 - Networks in Metamask
