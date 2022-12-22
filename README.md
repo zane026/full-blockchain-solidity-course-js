@@ -1175,6 +1175,40 @@ module.exports = {
 - [Hardhat-Etherscan](https://hardhat.org/plugins/nomiclabs-hardhat-etherscan.html)
 - [Etherscan API Keys](https://info.etherscan.com/api-keys/)
 - [Javascript == vs ===](https://stackoverflow.com/questions/359494/which-equals-operator-vs-should-be-used-in-javascript-comparisons)
+
+
+yarn add --dev @nomiclabs/hardhat-etherscan 
+
+在etherscan注册后，获得api-keys,放在hardhat.config.js里
+
+之后可以直接用yarn hardhat verify --network XX 合约地址 arg
+
+或者在deploy.js中，写一个verify的function
+
+```
+const verify = async (contractAddress, args) => {
+  console.log("Verifying contract...")
+  try {
+    await run("verify:verify", {
+      address: contractAddress,
+      constructorArguments: args,
+    })
+  } catch (e) {
+    if (e.message.toLowerCase().includes("already verified")) {
+      console.log("Already Verified!")
+    } else {
+      console.log(e)
+    }
+  }
+}
+
+
+
+```
+
+
+
+
 ## Interacting with Contracts in Hardhat
 *[⌨️ (09:06:37) Interacting with Contracts in Hardhat](https://youtu.be/gyMwXuJrbJQ?t=32797)*
 ## Artifacts Troubleshooting
@@ -1183,6 +1217,26 @@ module.exports = {
 *[⌨️ (09:10:52) Custom Hardhat Tasks](https://youtu.be/gyMwXuJrbJQ?t=33052)*
 - [Hardhat Tasks](https://hardhat.org/guides/create-task.html)
 - [Javascript Arrow Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
+
+```
+ 
+
+const { task } = require("hardhat/config")
+
+task("block-number", "Prints the current block number").setAction(
+  // const blockTask = async function() => {}
+  // async function blockTask() {}
+  async (taskArgs, hre) => {
+    const blockNumber = await hre.ethers.provider.getBlockNumber()
+    console.log(`Current block number: ${blockNumber}`)
+  }
+)
+
+module.exports = {}
+
+```
+
+
 ## Hardhat Localhost Node
 *[⌨️ (09:18:12) Hardhat Localhost Node](https://youtu.be/gyMwXuJrbJQ?t=33492)*
 ## The Hardhat Console
@@ -1194,6 +1248,62 @@ module.exports = {
 - [Mocha Style Tests](https://mochajs.org/)
 - [Chai](https://www.npmjs.com/package/chai)
 - [Waffle Tests](https://ethereum-waffle.readthedocs.io/en/latest/)
+
+```
+const { ethers } = require("hardhat")
+const { expect, assert } = require("chai")
+
+// describe("SimpleStorage", () => {})
+describe("SimpleStorage", function () {
+  // let simpleStorageFactory
+  // let simpleStorage
+  let simpleStorageFactory, simpleStorage
+  beforeEach(async function () {
+    simpleStorageFactory = await ethers.getContractFactory("SimpleStorage")
+    simpleStorage = await simpleStorageFactory.deploy()
+  })
+
+  it("Should start with a favorite number of 0", async function () {
+    const currentValue = await simpleStorage.retrieve()
+    const expectedValue = "0"
+    // assert
+    // expect
+    assert.equal(currentValue.toString(), expectedValue)
+    // expect(currentValue.toString()).to.equal(expectedValue)
+  })
+  it("Should update when we call store", async function () {
+    const expectedValue = "7"
+    const transactionResponse = await simpleStorage.store(expectedValue)
+    await transactionResponse.wait(1)
+
+    const currentValue = await simpleStorage.retrieve()
+    assert.equal(currentValue.toString(), expectedValue)
+  })
+
+  // Extra - this is not in the video
+  it("Should work correctly with the people struct and array", async function () {
+    const expectedPersonName = "Patrick"
+    const expectedFavoriteNumber = "16"
+    const transactionResponse = await simpleStorage.addPerson(
+      expectedPersonName,
+      expectedFavoriteNumber
+    )
+    await transactionResponse.wait(1)
+    const { favoriteNumber, name } = await simpleStorage.people(0)
+    // We could also do it like this
+    // const person = await simpleStorage.people(0)
+    // const favNumber = person.favoriteNumber
+    // const pName = person.name
+
+    assert.equal(name, expectedPersonName)
+    assert.equal(favoriteNumber, expectedFavoriteNumber)
+  })
+})
+
+```
+
+
+
 ## Hardhat Gas Reporter
 *[⌨️ (09:38:10) Hardhat Gas Reporter](https://youtu.be/gyMwXuJrbJQ?t=34690)*
 - [Hardhat Gas Reporter](https://www.npmjs.com/package/hardhat-gas-reporter)
