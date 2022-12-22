@@ -1062,13 +1062,92 @@ Alchemy 可以用来连接任何的blockchain网络， 类似的还有infura, mo
 - [DevDependencies vs Dependencies](https://stackoverflow.com/questions/18875674/whats-the-difference-between-dependencies-devdependencies-and-peerdependencies)
 - [@ Sign node modules](https://stackoverflow.com/questions/36667258/what-is-the-meaning-of-the-at-prefix-on-npm-packages)
 
+```
+yanr add --dev hardhat
+```
+
+
 ### Troubleshooting Hardhat Setup
 *[⌨️ (08:29:43) Troubleshooting Hardhat Setup](https://youtu.be/gyMwXuJrbJQ?t=30583)*
 - [Special Guest Cami Ramos Garzon](https://twitter.com/camiinthisthang)
+
+
+有时候hardhat.config.js不出现，可以在命令行 hardhat --verbose 找一下文件在哪个地方，然后删掉，重新install一下
+
 ## Hardhat Setup Continued
 *[⌨️ (08:31:48) Hardhat Setup Continued](https://youtu.be/gyMwXuJrbJQ?t=30708)*
 ## Deploying SimpleStorage from Hardhat
 *[⌨️ (08:33:10) Deploying SimpleStorage from Hardhat](https://youtu.be/gyMwXuJrbJQ?t=30790)*
+
+
+hardhat让合约compile变得简单很多，在以前需要用solcjs， 编译abi, binary之类的，现在可以直接把合约放进contracts文件夹里，然后yarn hardhat compile
+
+对于部署合约，会自动运行在hardhat的network中
+
+const { ethers} = require("hardhat")
+
+```
+async function main() {
+  const SimpleStorageFactory = await ethers.getContractFactory("SimpleStorage")
+  console.log("Deploying contract...")
+  const simpleStorage = await SimpleStorageFactory.deploy()
+  await simpleStorage.deployed()
+}
+
+
+不需要再有private key ， RPC URL
+
+如果想使用其他网络
+.env 中写RPC URL
+在.hardhat.config.js 中
+
+```
+require("@nomiclabs/hardhat-waffle")
+require("hardhat-gas-reporter")
+require("./tasks/block-number")
+require("@nomiclabs/hardhat-etherscan")
+require("dotenv").config()
+require("solidity-coverage")
+
+
+const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || ""
+const GOERLI_RPC_URL =
+  process.env.GOERLI_RPC_URL ||
+  "https://eth-goerli.alchemyapi.io/v2/your-api-key"
+const PRIVATE_KEY =
+  process.env.PRIVATE_KEY ||
+  "0x11ee3108a03081fe260ecdc106554d09d9d1209bcafd46942b10e02943effc4a"
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || ""
+
+module.exports = {
+  defaultNetwork: "hardhat",
+  networks: {
+    hardhat: {},
+    goerli: {
+      url: GOERLI_RPC_URL,
+      accounts: [PRIVATE_KEY],
+      chainId: 5,
+    },
+    localhost: {
+      url: "http://localhost:8545",
+      chainId: 31337,
+    },
+  },
+  solidity: "0.8.8",
+  etherscan: {
+    apiKey: ETHERSCAN_API_KEY,
+  },
+  gasReporter: {
+    enabled: true,
+    currency: "USD",
+    outputFile: "gas-report.txt",
+    noColors: true,
+    coinmarketcap: COINMARKETCAP_API_KEY,
+  },
+}
+```
+
+
 ## Networks in Hardhat
 *[⌨️ (08:41:44) Networks in Hardhat](https://youtu.be/gyMwXuJrbJQ?t=31304)*
 - [The Hardhat Network](https://hardhat.org/hardhat-network/)
