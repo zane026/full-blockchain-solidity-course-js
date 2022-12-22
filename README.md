@@ -968,6 +968,7 @@ yarn add dotenv
 
 require('dotenv').config
 
+```
 一些敏感的信息可以创建一个 .env文件，把变量名放里面XXX
 之后引用的时候process.env.XXX
 
@@ -1013,6 +1014,8 @@ main()
 
 之后用的时候，就可以直接调用这个加密后的私钥
 ether.Wallet.fromEncrypteJsonSync( 密文，password)
+
+
 ```
   const encryptedJson = fs.readFileSync("./.encryptedKey.json", "utf8");
     let wallet = new ethers.Wallet.fromEncryptedJsonSync(
