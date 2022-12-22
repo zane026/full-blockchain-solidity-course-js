@@ -1308,6 +1308,17 @@ describe("SimpleStorage", function () {
 *[⌨️ (09:38:10) Hardhat Gas Reporter](https://youtu.be/gyMwXuJrbJQ?t=34690)*
 - [Hardhat Gas Reporter](https://www.npmjs.com/package/hardhat-gas-reporter)
 - [Coinmarketcap API](https://coinmarketcap.com/api/)
+
+yarn add hardhat-gas-reporter --dev
+
+只需要在config里打开
+
+gasReporter{ enable : true}
+
+之后yarn hardhat test,会自动执行，出报告
+
+
+
 ## Solidity Coverage
 *[⌨️ (09:44:40) Solidity Coverage](https://youtu.be/gyMwXuJrbJQ?t=35080)*
 - [Solidity Coverage](https://github.com/sc-forks/solidity-coverage)
