@@ -1093,7 +1093,7 @@ async function main() {
   const simpleStorage = await SimpleStorageFactory.deploy()
   await simpleStorage.deployed()
 }
-
+```
 
 不需要再有private key ， RPC URL
 
@@ -1145,6 +1145,7 @@ module.exports = {
     coinmarketcap: COINMARKETCAP_API_KEY,
   },
 }
+
 ```
 
 
