@@ -1095,11 +1095,25 @@ async function main() {
 }
 ```
 
-不需要再有private key ， RPC URL
+不需要再有private key ， RPC URL。
+执行的时候
+yarn hardhat run ./scripts/deploy.js --network XXX
+
 
 如果想使用其他网络
 .env 中写RPC URL
 在.hardhat.config.js 中
+
+
+```
+networks: {
+    hardhat: {},
+    Rinkeybin: {
+      url: Rinkeybin,
+      accounts: [PRIVATE_KEY],
+      chainId: 5, // 从chainlist.org 查询
+    },
+```
 
 ```
 require("@nomiclabs/hardhat-waffle")
