@@ -889,7 +889,7 @@ yarn solcjs --bin --abi --include-path node modules/  --base-path . -o XXXXcontr
 "scripts": {
 "compile": "yarn solcjs --bin --abi --include-path node modules/  --base-path . -o XXXXcontract.sol"
 }
-
+```
 以后就可以直接用yarn compile
 
 ## Ganache & Networks
@@ -900,23 +900,140 @@ yarn solcjs --bin --abi --include-path node modules/  --base-path . -o XXXXcontr
 - [JSON RPC Spec Playground](https://playground.open-rpc.org/?schemaUrl=https://raw.githubusercontent.com/ethereum/execution-apis/assembled-spec/openrpc.json&uiSchema%5BappBar%5D%5Bui:splitView%5D=false&uiSchema%5BappBar%5D%5Bui:input%5D=false&uiSchema%5BappBar%5D%5Bui:examplesDropdown%5D=false)
 ## Introduction to Ethers.js
 - [Ethers.js](https://docs.ethers.io/v5/getting-started/)
+
+yarn add ethers
+在deploy.js中
+
+
+```
+const ehtres = require("ethers")
+const fs = require("fs")
+
+
+async function main(){
+const provider = new ethers.providers.JsonRpcProvider(RPC url) ；
+const wallet = new ethers.Wallet("私钥"， provider)；
+const abi = fs.readFileSync("./XXXXcontract.abi", "utf-8")
+
+const contractFactory = new ehters.ContractFactory(abi,binary,wallet)
+
+const contract = await contractFactory.deploy(); 
+
+}
+```
+
+
+
+
+
 - [prettier-plugin-solidity](https://github.com/prettier-solidity/prettier-plugin-solidity)
 ### A Note on the await Keyword
+contractFactory.deploy() 返回的是一个promise， await可以等到这个promise被解决
 ## Adding Transaction Overrides
+ contractFactory.deploy();
+ 可以添加一些arg
+  contractFactory.deploy({gasPrice:10000000});
+   contractFactory.deploy({gasLimit:100000});
+
 ## Transaction Receipts
+
+可以等待一个区块，再deploy这个合约
+const deploymentReceipt = await contract.deployTransaction.wait(1);
+
 ## Sending a "raw" Transaction in Ethers.js
+
+cosnt tx = {
+
+nounce:5，
+gasPrice:20000000，
+gasLimit:100000，
+to: null，
+value : 0，
+data : “把binary放进来”
+chainID : 1337.  //不同的网络有不同的chain ID，ganache 是1337
+}
+
+const signedTxResponse = await wallet.signTransaction(tx);
+const sentTxResponse = await wallet.sendTransaction(tx);
+await sentTxRespones.wait(1);
+
 ## Interacting with Contracts in Ethers.js
 - [EVM Decompiler](https://ethervm.io/decompile)
 - [BigNumber](https://docs.ethers.io/v5/api/utils/bignumber/)
 ## Environment Variables
 - [dotenv](https://www.npmjs.com/package/dotenv)
+
+```
+yarn add dotenv
+
+require('dotenv').config
+
+一些敏感的信息可以创建一个 .env文件，把变量名放里面XXX
+之后引用的时候process.env.XXX
+
+
+
+
 - [.gitignore](https://www.atlassian.com/git/tutorials/saving-changes/gitignore)
+
+创建一个.gitignore 文件，把想隐藏的file名，放在里面
+
+
+
 ## Better Private Key Management
 - [wallet.encrypt](https://docs.ethers.io/v5/api/signer/#Wallet-encrypt)
+
+可以在运行deploy.js之前，先把一些比如私钥、provider等信息，在命令行先执行
+
 - [THE .ENV PLEDGE](https://github.com/smartcontractkit/full-blockchain-solidity-course-js/discussions/5)
+
+```
+const ethers = require("ethers")
+const fs = require("fs-extra")
+require("dotenv").config()
+
+async function main() {
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY)
+    const encryptedJsonKey = await wallet.encrypt(
+        process.env.PRIVATE_KEY_PASSWORD,
+        process.env.PRIVATE_KEY
+    )
+    console.log(encryptedJsonKey)
+    fs.writeFileSync("./.encryptedKey.json", encryptedJsonKey)
+}
+
+main()
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.error(error)
+        process.exit(1)
+    })
+
+```
+
+之后用的时候，就可以直接调用这个加密后的私钥
+ether.Wallet.fromEncrypteJsonSync( 密文，password)
+```
+  const encryptedJson = fs.readFileSync("./.encryptedKey.json", "utf8");
+    let wallet = new ethers.Wallet.fromEncryptedJsonSync(
+       encryptedJson,
+       process.env.PRIVATE_KEY_PASSWORD
+     );
+     wallet = wallet.connect(provider);
+    
+```    
+
 ## Optional Prettier Formatting
 - [Prettier](https://prettier.io/docs/en/index.html)
 - [Best README Template](https://github.com/othneildrew/Best-README-Template)
+## Deploying to a Testnet or a Mainnet
+
+只需要测试网的RPC URL， 可以用geth
+Alchemy 可以用来连接任何的blockchain网络， 类似的还有infura, moralis
+注册后，RPC是项目中的网址
+私钥使用小狐狸的账号私钥
+
+
 ## Deploying to a Testnet or a Mainnet
 - [Alchemy](https://alchemy.com/?a=673c802981)
 - [Getting your private key from Metamask](https://metamask.zendesk.com/hc/en-us/articles/360015289632-How-to-Export-an-Account-Private-Key)
