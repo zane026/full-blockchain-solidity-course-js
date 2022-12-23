@@ -999,7 +999,10 @@ yarn add --dev @typechain/ethers-v5 @typechain/hardhat @types/chai @types/node @
 ## Linting
 *[⌨️ (10:06:20) Linting](https://youtu.be/gyMwXuJrbJQ?t=36380)*
 - [Eslint](https://eslint.org/)
+- 用于js
 - [Solhint](https://github.com/protofire/solhint)
+- 用于solidity
+- yarn solhint contracts/*.sol
 - [Linting Code](https://www.perforce.com/blog/qac/what-lint-code-and-why-linting-important)
 ## Hardhat Setup - Fund Me - Continued
 *[⌨️ (10:07:47) Hardhat Setup - Fund Me - Continued](https://youtu.be/gyMwXuJrbJQ?t=36467)*
