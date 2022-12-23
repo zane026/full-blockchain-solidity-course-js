@@ -1313,7 +1313,15 @@ yarn add hardhat-gas-reporter --dev
 
 只需要在config里打开
 
-gasReporter{ enable : true}
+```
+ gasReporter: {
+    enabled: true,
+    currency: "USD",
+    outputFile: "gas-report.txt",
+    noColors: true,
+    coinmarketcap: COINMARKETCAP_API_KEY,
+  }
+  ```
 
 之后yarn hardhat test,会自动执行，出报告
 
@@ -1322,6 +1330,17 @@ gasReporter{ enable : true}
 ## Solidity Coverage
 *[⌨️ (09:44:40) Solidity Coverage](https://youtu.be/gyMwXuJrbJQ?t=35080)*
 - [Solidity Coverage](https://github.com/sc-forks/solidity-coverage)
+
+
+用来测试的时候，显示哪些已经涉及了
+
+yanr add --dev solidity-coverage
+
+yarn hardhat coverage
+
+可以直接查看结果
+
+
 ## Hardhat Waffle
 *[⌨️ (09:47:02) Hardhat Waffle](https://youtu.be/gyMwXuJrbJQ?t=35222)*
 - [Hardhat-Waffle](https://npm.io/package/@nomiclabs/hardhat-waffle)
